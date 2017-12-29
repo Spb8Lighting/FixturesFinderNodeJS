@@ -1,0 +1,20 @@
+<!-- views/partials/footer.ejs -->
+<%# Remove blue ball if not the main page %>
+<%_ if(locals.Page == 'home') { %>
+<footer>
+	<p><a href="https://PayPal.me/SylvainGuiblain">Donate</a> | <a pop href="./fixturelog">Library changelog</a> | <a pop href="./changelog">Site changelog</a> | <a pop href="./sync">Status</a>
+	<br /><span class="copyleft"><a pop-iframe href="./admin">&copy;</a></span> Tool designed by <a href="https://spb8.lighting/contact">Spb8 Lighting</a> <em>(<a href="https://www.facebook.com/sylvain.guiblain">Sylvain Guiblain</a>)</em></p>
+
+	<p><a href="http://controllersupport.martin.com/Content/Manual/Support/Fixture_Library.htm">Fixture Library Revision 28.November.2017</a> by <a href="http://www.martin.com">&copy; Martin Professional</a>
+	<br />521 manufacturers, <a pop href="./list">5019 fixtures</a>, 11896 DMX Charts <em>(Fixture Record: <a pop href="fixture/PRG/MboxEXtreme+v3">508ch</a>, <a pop href="fixture/5+Star+Systems/Spica+250M">36 modes</a>)</em></p>
+</footer><% } %>
+
+<!-- JavaScript load -->
+<script defer src="./assets/js/jquery/jquery.min.js"></script>
+<script defer src="./assets/js/select2/select2.min.js"></script>
+<script defer src="./assets/js/fancybox/jquery.fancybox.min.js"></script>
+<%_ if(locals.Page == 'home') { %><script defer src="./assets/js/script.js"></script><% } %>
+<%_ if(locals.Page == 'admin') { %><script src="./assets/js/socketIO/socket.io.js"></script>
+<script>
+  var socket = io('http://localhost:8080');
+</script><% } %>
