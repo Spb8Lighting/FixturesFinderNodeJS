@@ -1,4 +1,4 @@
-<form method="post" action="/admin">
+<form id="adminform" method="post" action="/admin">
 	<div>
 		<fieldset>
 			<h2>Ingestions</h2>
@@ -204,7 +204,9 @@
 				<h2 class="error"><%= locals.flash.error %><h2>
 				<% } else if (locals.flash.ok) { %>
 				<h2 class="ok"><%= locals.flash.ok %><h2>
-					<% } %>
+				<% } if (locals.flash.content) { %>
+				<p><%= locals.flash.content %><p>
+				<% } %>
 			</fieldset>
 		</div>
 	<% } %>

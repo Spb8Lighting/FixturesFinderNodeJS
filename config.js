@@ -11,6 +11,12 @@ module.exports = {
 				ComputeFixtureChangelog :		'ComputeFixtureChangelog'
 			}
 		},
+		//Error Message
+			ErrorMessage :						() => {
+				return {
+					XMLFileNotLikeFixture :				'XML File is not matching exactly the Fixture name'
+				}
+			},
 	//Server Parameter
 		SiteName : 						() => { return 'Fixture Finder @nline' },
 	//Folders

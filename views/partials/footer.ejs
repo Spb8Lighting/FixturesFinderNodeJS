@@ -16,5 +16,9 @@
 <%_ if(locals.Page == 'home') { %><script defer src="./assets/js/script.js"></script><% } %>
 <%_ if(locals.Page == 'admin') { %><script src="./assets/js/socketIO/socket.io.js"></script>
 <script>
-  var socket = io('http://localhost:8080');
+  let socket = io('http://localhost:8080')
+		document.querySelector('#adminform').addEventListener('submit', (e) => {
+      e.preventDefault()    //stop form from submitting
+			socket.emit('action', 'formsubmit')
+	})
 </script><% } %>

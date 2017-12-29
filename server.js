@@ -37,10 +37,49 @@ let urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 //Socket routing
 io.on('connection', (socket) => {
-	let clientIp = socket.request.connection.remoteAddress;
-  io.emit('communication', { status : 'opened' });
+	let clientIp = socket.request.connection.remoteAddress
+	socket.emit('user connected')
 	console.log('user connected from ' + clientIp)
+	socket.on('action', () => {
+		let XMLWheels = []
+		,		XMLFixtures = []
+		,		Database = {}
+		recursive('m-pc/', ['*.+(png|PNG|bmp|BMP|jpeg|JPEG|jpg|JPG|gif|GIF|xslt|XSLT)'], (err, files) => {
+			for (let i = 0, len = files.length; i < len; i++) {
+				let PathPart = files[i].split('\\')
+				,		NbOfLvl = PathPart.length
+				if(NbOfLvl == 4) {					// Only AccessoriesIndex.xml file (Wheel)
+					if(typeof Database[PathPart[2]] !== 'object') {
+						Database[PathPart[2]] = {}
+					}
+					Database[PathPart[2]]['HasAccessories'] = true
+					XMLWheels.push(files[i])
+				} else if (NbOfLvl == 5) {	// Only Fixture XML file & Xslt
+					if(typeof Database[PathPart[2]] !== 'object') {
+						Database[PathPart[2]] = {}
+					}
+					if(typeof Database[PathPart[2]][PathPart[3]] !== 'object') {
+						Database[PathPart[2]][PathPart[3]] = {}
+					}
+					if(PathPart[4] != PathPart[3] + '.xml') {
+						Database[PathPart[2]][PathPart[3]]['xml_status'] = Config.ErrorMessage().XMLFileNotLikeFixture
+					}
+					if(PathPart[4].toLowerCase() != 'personalities.xml') {
+						Database[PathPart[2]][PathPart[3]]['xml'] = PathPart[4]
+						XMLFixtures.push(files[i])
+					} else if (PathPart[4] == 'personalities.xml') {
+						Database[PathPart[2]][PathPart[3]]['HasPersonalities'] = true
+					}
+				}
+			}
+			let feedback = XMLWheels.length + ' wheels detected | ' + XMLFixtures.length + ' Fixtures detected'
+			socket.emit(feedback) // <= Ne fonctionne pas :(
+			console.log(feedback)
+			//console.log(Database)
+		})
+	})
   socket.on('disconnect', () => {
+		socket.emit('user disconnected')
     console.log('user disconnected from ' + clientIp)
   })
 })
@@ -86,9 +125,42 @@ app.route('/admin')
 			} else {
 				if(req.body[Config.AdminForm().IngestFixture]) {
 					req.flash('ok', 'Fixture Ingestion launch')
+					res.end();
 					// ignore files named "foo.cs" or files that end in ".html".
-					recursive("some/path", (err, files) => {
-					  console.log(files)
+					let XMLWheels = []
+					,		XMLFixtures = []
+					,		Database = {}
+					recursive('m-pc/', ['*.+(png|PNG|bmp|BMP|jpeg|JPEG|jpg|JPG|gif|GIF|xslt|XSLT)', 'Personalities.xml'], (err, files) => {
+						for (let i = 0, len = files.length; i < len; i++) {
+							let PathPart = files[i].split('\\')
+							,		NbOfLvl = PathPart.length
+							if(NbOfLvl == 4) {					// Only AccessoriesIndex.xml file (Wheel)
+								if(typeof Database[PathPart[2]] !== 'object') {
+									Database[PathPart[2]] = {}
+								}
+								Database[PathPart[2]]['HasAccessories'] = true
+								XMLWheels.push(files[i])
+							} else if (NbOfLvl == 5) {	// Only Fixture XML file & Xslt
+								if(typeof Database[PathPart[2]] !== 'object') {
+									Database[PathPart[2]] = {}
+								}
+								if(typeof Database[PathPart[2]][PathPart[3]] !== 'object') {
+									Database[PathPart[2]][PathPart[3]] = {}
+								}
+								if(PathPart[4] != PathPart[3] + '.xml') {
+									Database[PathPart[2]][PathPart[3]]['xml_status'] = Config.ErrorMessage().XMLFileNotLikeFixture
+								}
+								if(PathPart[4].toLowerCase() != 'personalities.xml') {
+									Database[PathPart[2]][PathPart[3]]['xml'] = PathPart[4]
+								} else if (PathPart[4] == 'personalities.xml') {
+									Database[PathPart[2]][PathPart[3]]['HasPersonalities'] = true
+								}
+								XMLFixtures.push(files[i])
+							}
+						}
+						io.emit('progress', XMLWheels.length + ' wheels detected | ' + XMLFixtures.length + ' Fixtures detected')
+						console.log(XMLWheels.length + ' wheels detected | ' + XMLFixtures.length + ' Fixtures detected')
+						//console.log(Database)
 					})
 				} else {
 					req.flash('ok', 'Function not yet implemented')
