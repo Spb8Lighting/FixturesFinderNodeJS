@@ -9,7 +9,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="<%= locals.FormID.IngestAllLibraries %>" name="<%= locals.FormID.IngestAllLibraries %>" value="1" />
+					<input type="checkbox" id="<%= locals.FormID.IngestAllLibraries %>" name="<%= locals.FormID.IngestAllLibraries %>" />
 				</div>
 			</div>
 			<div>
@@ -19,7 +19,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="<%= locals.FormID.IngestAccessories %>" name="<%= locals.FormID.IngestAccessories %>" value="1" />
+					<input type="checkbox" id="<%= locals.FormID.IngestAccessories %>" name="<%= locals.FormID.IngestAccessories %>" />
 				</div>
 			</div>
 			<div>
@@ -29,7 +29,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="<%= locals.FormID.IngestFixture %>" name="<%= locals.FormID.IngestFixture %>" value="1" />
+					<input type="checkbox" id="<%= locals.FormID.IngestFixture %>" name="<%= locals.FormID.IngestFixture %>" />
 				</div>
 			</div>
 			<div>
@@ -39,7 +39,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="<%= locals.FormID.UpdateFixtureAccessories %>" name="<%= locals.FormID.UpdateFixtureAccessories %>" value="1" />
+					<input type="checkbox" id="<%= locals.FormID.UpdateFixtureAccessories %>" name="<%= locals.FormID.UpdateFixtureAccessories %>" />
 				</div>
 			</div>
 			<div>
@@ -49,7 +49,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="<%= locals.FormID.ComputeFixtureChangelog %>" name="<%= locals.FormID.ComputeFixtureChangelog %>" value="1" />
+					<input type="checkbox" id="<%= locals.FormID.ComputeFixtureChangelog %>" name="<%= locals.FormID.ComputeFixtureChangelog %>" />
 				</div>
 			</div>
 			<div>
@@ -59,7 +59,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="reparameters" name="reparameters" value="1" />
+					<input type="checkbox" id="reparameters" name="reparameters" />
 				</div>
 			</div>
 			<div>
@@ -69,7 +69,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="restats" name="restats" value="1" />
+					<input type="checkbox" id="restats" name="restats" />
 				</div>
 			</div>
 			<div>
@@ -79,7 +79,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="scanpreset" name="scanpreset" value="1" />
+					<input type="checkbox" id="scanpreset" name="scanpreset" />
 				</div>
 			</div>
 		</fieldset>
@@ -105,7 +105,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="resitemap" name="resitemap" value="1" />
+					<input type="checkbox" id="resitemap" name="resitemap" />
 				</div>
 			</div>
 		</fieldset>
@@ -118,7 +118,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="cleancache" name="cleancache" value="1" />
+					<input type="checkbox" id="cleancache" name="cleancache" />
 				</div>
 			</div>
 			<div>
@@ -128,7 +128,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="cleancacheChangelog" name="cleancacheChangelog" value="1" />
+					<input type="checkbox" id="cleancacheChangelog" name="cleancacheChangelog" />
 				</div>
 			</div>
 			<div>
@@ -138,7 +138,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="cleancacheFixtureChangelog" name="cleancacheFixtureChangelog" value="1" />
+					<input type="checkbox" id="cleancacheFixtureChangelog" name="cleancacheFixtureChangelog" />
 				</div>
 			</div>
 			<div>
@@ -148,7 +148,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="cleancacheFixtureList" name="cleancacheFixtureList" value="1" />
+					<input type="checkbox" id="cleancacheFixtureList" name="cleancacheFixtureList" />
 				</div>
 			</div>
 			<div>
@@ -158,7 +158,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="cleancacheFixtureDetail" name="cleancacheFixtureDetail" value="1" />
+					<input type="checkbox" id="cleancacheFixtureDetail" name="cleancacheFixtureDetail" />
 				</div>
 			</div>
 			<div>
@@ -168,7 +168,7 @@
 					</label>
 				</div>
 				<div>
-					<input type="checkbox" id="cleancacheSearch" name="cleancacheSearch" value="1" />
+					<input type="checkbox" id="cleancacheSearch" name="cleancacheSearch" />
 				</div>
 			</div>
 			</fieldset>
@@ -197,17 +197,8 @@
 				</div>
 			</fieldset>
 	</div>
-	<% if (locals.flash) { %>
 		<div>
-			<fieldset>
-				<% if (locals.flash.error) { %>
-				<h2 class="error"><%= locals.flash.error %><h2>
-				<% } else if (locals.flash.ok) { %>
-				<h2 class="ok"><%= locals.flash.ok %><h2>
-				<% } if (locals.flash.content) { %>
-				<p><%= locals.flash.content %><p>
-				<% } %>
+			<fieldset id="Results">
 			</fieldset>
 		</div>
-	<% } %>
 </form>
