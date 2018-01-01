@@ -22,7 +22,6 @@ app.use(session({																																// Set session
 }))
 app.use(require( Config.FolderMiddlewares() + '/flash.js'))											// Set Flash MiddleWares
 */
-app.use('/assets', express.static( Config.FolderPublic() ))											// Set 	Generic 				Public Folder
 app.use('/assets/js/jquery', express.static( Config.FolderJquery.js() ))				// Set 	jQuery JS 			Public Folder
 app.use('/assets/js/socketIO', express.static( Config.FolderSocketIO.js() ))		// Set 	Socket IO 			Public Folder
 app.use('/assets/js/select2', express.static( Config.FolderSelect2.js() ))			// Set 	Select2 JS			Public Folder
@@ -64,47 +63,51 @@ io.on('connection', socket => {
 		,		NumberOfFolderScanned = 0
 
 		for(let key in FoldersToScan) {
-			
-			let XMLWheels = []
-			,		XMLFixtures = []
-
 			NumberOfFolderScanned++
-			io.sockets.emit('TaskProgress', { folder: 'Library-' + key, percentage : 0, description : 'Library '+ key +'...' })
-			recursive(FoldersToScan[key], ['*.+(png|PNG|bmp|BMP|jpeg|JPEG|jpg|JPG|gif|GIF|xslt|XSLT)'], (err, files) => {
-				for (let i = 0, len = files.length; i < len; i++) {
-					if(i%5 == 0) {
-						io.sockets.emit('TaskProgress', { folder: 'Library-' + key, percentage : Percentage(i, len), description : i + '/' + len + ' files ingested...' } )
+			io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Init', percentage : 0, description : 'Library '+ key +'...' })
+			recursive(FoldersToScan[key], ['*.+(png|PNG|bmp|BMP|jpeg|JPEG|jpg|JPG|gif|GIF|xslt|XSLT)'])
+				.then(files => {
+
+					let XMLWheels = []
+					,		XMLFixtures = []
+
+					for (let i = 0, len = files.length; i < len; i++) {
+						if(i%5 == 0) {
+							io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'FileSystem', percentage : Percentage(i, len), description : i + '/' + len + ' files ingested...' } )
+						}
+						let PathPart = files[i].split('\\')
+						,		NbOfLvl = PathPart.length
+						if(NbOfLvl == 4) {					// Only AccessoriesIndex.xml file (Wheel)
+							if(typeof Database[PathPart[2]] !== 'object') {
+								Database[PathPart[2]] = {}
+							}
+							Database[PathPart[2]]['HasAccessories'] = true
+							XMLWheels.push(files[i])
+							io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Accessories', percentage : 0, description : XMLWheels.length + ' accessories' } )
+						} else if (NbOfLvl == 5) {	// Only Fixture XML file & Xslt
+							if(typeof Database[PathPart[2]] !== 'object') {
+								Database[PathPart[2]] = {}
+							}
+							if(typeof Database[PathPart[2]][PathPart[3]] !== 'object') {
+								Database[PathPart[2]][PathPart[3]] = {}
+							}
+							if(PathPart[4] != PathPart[3] + '.xml') {
+								Database[PathPart[2]][PathPart[3]]['xml_status'] = Config.ErrorMessage().XMLFileNotLikeFixture
+							}
+							if(PathPart[4].toLowerCase() != 'personalities.xml') {
+								Database[PathPart[2]][PathPart[3]]['xml'] = PathPart[4]
+								XMLFixtures.push(files[i])
+								io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Fixtures', percentage : 0, description : XMLFixtures.length + ' accessories' } )
+							} else if (PathPart[4] == 'personalities.xml') {
+								Database[PathPart[2]][PathPart[3]]['HasPersonalities'] = true
+							}
+						}
 					}
-					let PathPart = files[i].split('\\')
-					,		NbOfLvl = PathPart.length
-					if(NbOfLvl == 4) {					// Only AccessoriesIndex.xml file (Wheel)
-						if(typeof Database[PathPart[2]] !== 'object') {
-							Database[PathPart[2]] = {}
-						}
-						Database[PathPart[2]]['HasAccessories'] = true
-						XMLWheels.push(files[i])
-					} else if (NbOfLvl == 5) {	// Only Fixture XML file & Xslt
-						if(typeof Database[PathPart[2]] !== 'object') {
-							Database[PathPart[2]] = {}
-						}
-						if(typeof Database[PathPart[2]][PathPart[3]] !== 'object') {
-							Database[PathPart[2]][PathPart[3]] = {}
-						}
-						if(PathPart[4] != PathPart[3] + '.xml') {
-							Database[PathPart[2]][PathPart[3]]['xml_status'] = Config.ErrorMessage().XMLFileNotLikeFixture
-						}
-						if(PathPart[4].toLowerCase() != 'personalities.xml') {
-							Database[PathPart[2]][PathPart[3]]['xml'] = PathPart[4]
-							XMLFixtures.push(files[i])
-						} else if (PathPart[4] == 'personalities.xml') {
-							Database[PathPart[2]][PathPart[3]]['HasPersonalities'] = true
-						}
-					}
-				}
-				let feedback = XMLWheels.length + ' wheels detected | ' + XMLFixtures.length + ' Fixtures detected'
-				io.sockets.emit('TaskProgress', { folder: 'Library-' + key, percentage : 100, description : feedback } )
-				//console.log(Database)
-			})
+					let feedback = XMLWheels.length + ' wheels detected | ' + XMLFixtures.length + ' Fixtures detected'
+					io.sockets.emit('TaskProgress', { folder: 'Library-' + key, percentage : 100, description : feedback } )
+					//console.log(Database)
+				})
+				.catch(error => console.error('Something went wrong', error))
 		}
 	})
   socket.on('disconnect', () => {

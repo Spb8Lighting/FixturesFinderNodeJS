@@ -1,6 +1,6 @@
 module.exports = {
 	//Client Parameter
-		HttpPort :						() => { return '8080' },
+		HttpPort :						() => { return '80' },
 	//Client Form Parameter
 		AdminForm :						() => {
 			return {

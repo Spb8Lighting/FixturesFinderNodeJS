@@ -29,23 +29,48 @@ socket.on('TaskProgress', data => {
 			let FolderProgress = document.getElementById(data.folder)
 		// If the receiver DIV doesn't exists, create it
 			if(!FolderProgress) {
-				let Span = document.createElement('span')
-				Span.setAttribute('id', data.folder)
-				Span.innerHTML = `<h2></h2>
-				<p>
-					<progress value="0" max="100"></progress>
-					<span></span>
-				</p>`
-				Results.appendChild(Span)
+				let Container = document.createElement('div')
+				Container.setAttribute('id', data.folder)
+				Container.setAttribute('class', 'ingestion')
+				Container.innerHTML = `<h2></h2>
+				<h3>FileSystem</h3>
+				<div class="FileSystem">
+					<p></p>
+					<p>
+						<progress value="0" max="100"></progress>
+						<span></span>
+					</p>
+				</div>
+				<h3>Accessories</h3>
+				<div class="Accessories">
+					<p></p>
+					<p>
+						<progress value="0" max="100"></progress>
+						<span></span>
+					</p>
+				</div>
+				<h3>Fixtures</h3>
+				<div class="Fixtures">
+					<p></p>
+					<p>
+						<progress value="0" max="100"></progress>
+						<span></span>
+					</p>
+				</div>`
+				Results.appendChild(Container)
 				FolderProgress = document.getElementById(data.folder)
 			}
 		// Then do the stuff
-			let Advancement = FolderProgress.querySelector('progress')
-			,		Percentage = FolderProgress.querySelector('span')
-			,		Title = FolderProgress.querySelector('h2')
+		if(data.Type != 'Init') {
+			let Advancement = FolderProgress.querySelector('.' + data.Type + ' progress')
+			,		Percentage = FolderProgress.querySelector('.' + data.Type + ' span')
+			,		Title = FolderProgress.querySelector('.' + data.Type + ' p:firstchild')
 			Advancement.setAttribute('value', data.percentage)
 			Percentage.innerHTML = data.percentage + '%'
 			Title.innerHTML = data.description
+		} else {
+			FolderProgress.querySelector('h2').innerHTML = data.description
+		}
  })
 socket.on('fromServer', data => {
 		 console.log(data)

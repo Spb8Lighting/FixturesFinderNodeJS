@@ -199,6 +199,9 @@ fieldset>div,
 	width: calc(100% - 20px);
 	margin-top: -1.7px;
 }
+fieldset> .ingestion {
+	display: block;
+}
 #ChangelogLink>ul>li {
 	display: list-item;
 }
