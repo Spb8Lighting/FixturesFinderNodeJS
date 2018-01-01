@@ -199,9 +199,6 @@ fieldset>div,
 	width: calc(100% - 20px);
 	margin-top: -1.7px;
 }
-fieldset> .ingestion {
-	display: block;
-}
 #ChangelogLink>ul>li {
 	display: list-item;
 }
@@ -214,6 +211,12 @@ fieldset>div>div {
 fieldset>div>div:last-child {
 	text-align: center;
 	vertical-align: middle;
+}
+.ingestion {
+	display: block;
+}
+div.ingestion>div:last-child  {
+ text-align: left;
 }
 #Fixtures>ul>li {
 	width: auto;

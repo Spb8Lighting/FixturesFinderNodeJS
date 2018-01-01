@@ -22,15 +22,16 @@ app.use(session({																																// Set session
 }))
 app.use(require( Config.FolderMiddlewares() + '/flash.js'))											// Set Flash MiddleWares
 */
-app.use('/assets/js/jquery', express.static( Config.FolderJquery.js() ))				// Set 	jQuery JS 			Public Folder
-app.use('/assets/js/socketIO', express.static( Config.FolderSocketIO.js() ))		// Set 	Socket IO 			Public Folder
-app.use('/assets/js/select2', express.static( Config.FolderSelect2.js() ))			// Set 	Select2 JS			Public Folder
-app.use('/assets/css/select2', express.static( Config.FolderSelect2.css() ))		// Set 	Select2 CSS			Public Folder
-app.use('/assets/js/fancybox', express.static( Config.FolderFancybox.js() ))		// Set 	Fancybox JS			Public Folder
-app.use('/assets/css/fancybox', express.static( Config.FolderFancybox.css() ))	// Set 	Fancybox CSS		Public Folder
+app.use('/assets', express.static( __dirname + Config.FolderPublic() ))											// Set 	Generic 				Public Folder
+app.use('/assets/js/jquery', express.static( __dirname + Config.FolderJquery.js() ))				// Set 	jQuery JS 			Public Folder
+app.use('/assets/js/socketIO', express.static( __dirname + Config.FolderSocketIO.js() ))		// Set 	Socket IO 			Public Folder
+app.use('/assets/js/select2', express.static( __dirname + Config.FolderSelect2.js() ))			// Set 	Select2 JS			Public Folder
+app.use('/assets/css/select2', express.static( __dirname + Config.FolderSelect2.css() ))		// Set 	Select2 CSS			Public Folder
+app.use('/assets/js/fancybox', express.static( __dirname + Config.FolderFancybox.js() ))		// Set 	Fancybox JS			Public Folder
+app.use('/assets/css/fancybox', express.static( __dirname + Config.FolderFancybox.css() ))	// Set 	Fancybox CSS		Public Folder
 
 app.set('view engine', 'ejs')																										// Set Render engine
-app.set('views', Config.FolderViews() )																					// Set View root folder
+app.set('views', __dirname + Config.FolderViews() )																					// Set View root folder
 
 // create application/json parser
 let jsonParser = bodyParser.json()
@@ -64,16 +65,17 @@ io.on('connection', socket => {
 
 		for(let key in FoldersToScan) {
 			NumberOfFolderScanned++
-			io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Init', percentage : 0, description : 'Library '+ key +'...' })
+			io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Init', percentage : 0, description : key })
 			recursive(FoldersToScan[key], ['*.+(png|PNG|bmp|BMP|jpeg|JPEG|jpg|JPG|gif|GIF|xslt|XSLT)'])
 				.then(files => {
 
 					let XMLWheels = []
 					,		XMLFixtures = []
+					,		len = files.length
 
-					for (let i = 0, len = files.length; i < len; i++) {
-						if(i%5 == 0) {
-							io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'FileSystem', percentage : Percentage(i, len), description : i + '/' + len + ' files ingested...' } )
+					for (let i = 0; i < len; i++) {
+						if(i%10 == 0) {
+							io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'FileSystem', percentage : Percentage((i + 1), len), description : (i + 1) + '/' + len + ' files ingested...' } )
 						}
 						let PathPart = files[i].split('\\')
 						,		NbOfLvl = PathPart.length
@@ -83,7 +85,9 @@ io.on('connection', socket => {
 							}
 							Database[PathPart[2]]['HasAccessories'] = true
 							XMLWheels.push(files[i])
-							io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Accessories', percentage : 0, description : XMLWheels.length + ' accessories' } )
+							if(i%10 == 0) {
+								io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Accessories', percentage : 0, description : XMLWheels.length + ' accessories' } )
+							}
 						} else if (NbOfLvl == 5) {	// Only Fixture XML file & Xslt
 							if(typeof Database[PathPart[2]] !== 'object') {
 								Database[PathPart[2]] = {}
@@ -97,14 +101,16 @@ io.on('connection', socket => {
 							if(PathPart[4].toLowerCase() != 'personalities.xml') {
 								Database[PathPart[2]][PathPart[3]]['xml'] = PathPart[4]
 								XMLFixtures.push(files[i])
-								io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Fixtures', percentage : 0, description : XMLFixtures.length + ' accessories' } )
+								if(i%10 == 0) {
+									io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Charts', percentage : 0, description : XMLFixtures.length + ' Charts' } )
+								}
 							} else if (PathPart[4] == 'personalities.xml') {
 								Database[PathPart[2]][PathPart[3]]['HasPersonalities'] = true
 							}
 						}
 					}
 					let feedback = XMLWheels.length + ' wheels detected | ' + XMLFixtures.length + ' Fixtures detected'
-					io.sockets.emit('TaskProgress', { folder: 'Library-' + key, percentage : 100, description : feedback } )
+					io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'FileSystem', percentage : 100, description : len + ' files' } )
 					//console.log(Database)
 				})
 				.catch(error => console.error('Something went wrong', error))
