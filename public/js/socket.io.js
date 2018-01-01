@@ -15,23 +15,28 @@ let socket = io('http://localhost:8080')
 ,		Form = document.getElementById('adminform')
 // On Form Submit send to SocketServer
 Form.addEventListener('submit', e => {
-	e.preventDefault()
-	let data = formToJSON(Form)
-	console.log(data)
-	socket.emit('action', data)
+	// Block form submit
+		e.preventDefault()
+	// Empty Results firstly
+		Results.innerHTML = ''
+	// Get All form data into JSON
+		let data = formToJSON(Form)
+	// Send data to socket server
+		socket.emit('action', data)
 })
 socket.on('TaskProgress', data => {
 		// Set the receiver DIV for a given folder
 			let FolderProgress = document.getElementById(data.folder)
 		// If the receiver DIV doesn't exists, create it
 			if(!FolderProgress) {
-				Results.innerHTML = `<div id="${data.folder}">
-				<h2></h2>
+				let Span = document.createElement('span')
+				Span.setAttribute('id', data.folder)
+				Span.innerHTML = `<h2></h2>
 				<p>
 					<progress value="0" max="100"></progress>
 					<span></span>
-				</p>
-				</div>`
+				</p>`
+				Results.appendChild(Span)
 				FolderProgress = document.getElementById(data.folder)
 			}
 		// Then do the stuff

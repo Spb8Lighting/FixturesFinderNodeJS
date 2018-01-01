@@ -49,9 +49,7 @@ io.on('connection', socket => {
 			data = JSON.parse(data)
 
 		// Set the severals variables used later
-			let XMLWheels = []
-			,		XMLFixtures = []
-			,		Database = {}
+		let		Database = {}
 			,		FoldersToScan = {}
 
 		// If not specified to scan all folder, reduce the Folders to be scan to the newest one
@@ -64,10 +62,14 @@ io.on('connection', socket => {
 
 		let NumberOfFolderToScan = Object.keys(FoldersToScan).length
 		,		NumberOfFolderScanned = 0
-		
+
 		for(let key in FoldersToScan) {
+			
+			let XMLWheels = []
+			,		XMLFixtures = []
+
 			NumberOfFolderScanned++
-			io.sockets.emit('TaskProgress', { folder: 'Library-' + key, percentage : 0, description : Percentage(NumberOfFolderScanned, NumberOfFolderToScan) + '% > Scanning '+ key +'...' })
+			io.sockets.emit('TaskProgress', { folder: 'Library-' + key, percentage : 0, description : 'Library '+ key +'...' })
 			recursive(FoldersToScan[key], ['*.+(png|PNG|bmp|BMP|jpeg|JPEG|jpg|JPG|gif|GIF|xslt|XSLT)'], (err, files) => {
 				for (let i = 0, len = files.length; i < len; i++) {
 					if(i%5 == 0) {
