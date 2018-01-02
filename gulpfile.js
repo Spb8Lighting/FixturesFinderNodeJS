@@ -10,6 +10,9 @@ gulp.task('sass', () => {
 		.pipe($.sass({
 			onError: console.error.bind(console, 'SASS Error')
 		}))
+		.pipe($.autoprefixer({
+			browsers: ['last 2 versions']
+		}))
 		.pipe(gulp.dest('dist/css'))
 })
 
