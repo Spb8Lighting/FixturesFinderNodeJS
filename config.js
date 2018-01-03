@@ -1,19 +1,16 @@
 module.exports = {
 	//Client Parameter
-		HttpPort :						() => { return '8080' },
+		HttpPort :						'8080',
 	//Client Form Parameter
-		AdminForm :						() => {
-			return {
+		AdminForm :						{
 				IngestAllLibraries :				'IngestAllLibraries',
 				IngestAccessories :					'IngestAccessories',
 				IngestFixture :							'IngestFixture',
 				UpdateFixtureAccessories :	'UpdateFixtureAccessories',
 				ComputeFixtureChangelog :		'ComputeFixtureChangelog'
-			}
 		},
 		//Fixture Library Releases Message
-			FixtureLibraryReleases :	() => {
-				return {
+			FixtureLibraryReleases :	{
 					'2014-07-14' :				'm-pc/2014-07-14-FixtureLibrary/',
 					'2014-09-10' :				'm-pc/2014-09-10-FixtureLibrary/',
 					'2014-11-01' :				'm-pc/2014-11-01-FixtureLibrary/',
@@ -32,34 +29,32 @@ module.exports = {
 					'2017-07-13' :				'm-pc/2017-07-13-FixtureLibrary/',
 					'2017-09-17' :				'm-pc/2017-09-17-FixtureLibrary/',
 					'2017-11-28' :				'm-pc/2017-11-28-FixtureLibrary/'
-				}
 			},
 		//Error Message
-			ErrorMessage :						() => {
-				return {
+			ErrorMessage :						{
 					XMLFileNotLikeFixture :				'XML File is not matching exactly the Fixture name'
-				}
 			},
 	//Server Parameter
-		SiteName : 						() => { return 'Fixture Finder @nline' },
+		SiteName : 						'Fixture Finder @nline',
 	//Folders
-		FolderMiddlewares : 	() => { return '/middlewares' },
-		FolderRouters : 			() => { return '/site_routers' },
-		FolderViews : 				() => { return '/views' },
-		FolderDist : 					() => { return '/dist' },
+		FolderMiddlewares : 	'middlewares',
+		FolderRouters : 			'site_routers',
+		FolderViews : 				'views',
+		FolderDist : 					'dist',
+		FolderPrivate : 			'private',
 	//JS Scripts folder alias routing
 		FolderJquery : {
-			js : 								() => { return '/bower_components/jquery/dist' }
+			js : 								'bower_components/jquery/dist'
 		},
 		FolderSocketIO : {
-			js : 								() => { return '/bower_components/socket.io-client/dist' }
+			js : 								'bower_components/socket.io-client/dist'
 		},
 		FolderSelect2 : {
-			js :								() => { return '/bower_components/select2/dist/js' },
-			css :								() => { return '/bower_components/select2/dist/css' }
+			js :								'bower_components/select2/dist/js',
+			css :								'bower_components/select2/dist/css'
 		},
 		FolderFancybox : {
-			js :								() => { return '/bower_components/fancybox/dist/' },
-			css :								() => { return '/bower_components/fancybox/dist/' }
+			js :								'bower_components/fancybox/dist/',
+			css :								'bower_components/fancybox/dist/'
 		}
 }

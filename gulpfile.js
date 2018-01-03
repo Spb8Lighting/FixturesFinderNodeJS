@@ -1,13 +1,20 @@
-let gulp = require('gulp')
-,	$ = require('gulp-load-plugins')()
-,	del = require('del')
-,	FolderJS = 'dist/js/*.js'
-,	FolderCSS = 'dist/css/*.css'
-,	FolderIMG = 'dist/img/*'
-,	SourceCSS = 'private/scss/*.scss'
-,	SourceJS = 'private/js/*.js'
-,	SourceIMG = 'private/img/*'
+const Config = 		require('./config.js')
+,	gulp = 					require('gulp')
+,	$ = 						require('gulp-load-plugins')()
+,	del = 					require('del')
+,	FolderJS = 		Config.FolderDist + '/js/*.js'
+,	FolderCSS = 	Config.FolderDist + '/css/*.css'
+,	FolderIMG = 	Config.FolderDist + '/img/**/*'
+,	SourceFont = Config.FolderPrivate + '/*.ttf'
+,	SourceCSS = 	Config.FolderPrivate + '/scss/*.scss'
+,	SourceJS = 		Config.FolderPrivate + '/js/*.js'
+,	SourceIMG = 	Config.FolderPrivate + '/img/**/*'
 
+// Process Other files to generate distribuable files
+gulp.task('font', () => {
+	return gulp.src(SourceFont)
+		.pipe(gulp.dest( Config.FolderDist ))
+})
 // Process SCSS files to generate distribuable files
 gulp.task('sass', () => {
 	return gulp.src(SourceCSS)
@@ -19,7 +26,7 @@ gulp.task('sass', () => {
 		}))
 		.pipe($.cleanCss())
 		.pipe($.rename('min.css'))
-		.pipe(gulp.dest('dist/css'))
+		.pipe(gulp.dest( Config.FolderDist + '/css'))
 })
 // Process JS files to generate distribuable files
 gulp.task('js', () => {
@@ -28,17 +35,17 @@ gulp.task('js', () => {
 			mangle: false,
 			ecma: 6
     }))
-		.pipe(gulp.dest('dist/js'))
+		.pipe(gulp.dest( Config.FolderDist + '/js'))
 })
 // Process IMG files to generate distribuable files
 gulp.task('img', () => {
   gulp.src(SourceIMG)
     .pipe($.image())
-    .pipe(gulp.dest('dist/img'))
+    .pipe(gulp.dest( Config.FolderDist + '/img'))
 })
 // Destroy DIST folder to be rightly rebuilt
 gulp.task('clean', () => {
-	del('dist')
+	del( Config.FolderDist )
 })
 // On any modification of dist file, sent to update on browser
 gulp.task('watch', () => {
@@ -51,5 +58,5 @@ gulp.task('watch', () => {
 	})
 })
 // Default task when gulp command launched
-gulp.task('default', ['sass', 'js', 'img', 'clean'], () => {
+gulp.task('default', ['font', 'sass', 'js', 'img'], () => {
 })

@@ -1,7 +1,8 @@
 //Loab basic Node Module
-let		Config = 				require('./config.js') 																// Config File
+const		Config = 		require('./config.js') 																// Config File
 , fs = 						require('fs')																							// FileSystem
 , express = 			require('express')																				// HTTP Server
+, favicon = 			require('express-favicon')																// Favicon
 , helmet = 				require('helmet')																					// HTTP Protection
 //, session = 			require('express-session')																// HTTP Session
 , bodyParser = 		require('body-parser')																		// HTTP Parser
@@ -9,7 +10,7 @@ let		Config = 				require('./config.js') 																// Config File
 , recursive = 		require('recursive-readdir')															// Recursive File listing
 , _ =							require('lodash')																					// Lodash
 , app = 					express()																									// Define HTTP Server
-, server = 				app.listen( Config.HttpPort() )														// Define HTTP Port server
+, server = 				app.listen( Config.HttpPort )														// Define HTTP Port server
 , io = 						require('socket.io').listen(server)												// Socket IO server
 
 app.use(helmet())																																// Set Helmet for HTTP protection
@@ -22,16 +23,17 @@ app.use(session({																																// Set session
 }))
 app.use(require( Config.FolderMiddlewares() + '/flash.js'))											// Set Flash MiddleWares
 */
-app.use('/dist', express.static( __dirname + Config.FolderDist() ))										// Set 	Generic 				Public Folder
-app.use('/assets/js/jquery', express.static( __dirname + Config.FolderJquery.js() ))				// Set 	jQuery JS 			Public Folder
-app.use('/assets/js/socketIO', express.static( __dirname + Config.FolderSocketIO.js() ))		// Set 	Socket IO 			Public Folder
-app.use('/assets/js/select2', express.static( __dirname + Config.FolderSelect2.js() ))			// Set 	Select2 JS			Public Folder
-app.use('/assets/css/select2', express.static( __dirname + Config.FolderSelect2.css() ))		// Set 	Select2 CSS			Public Folder
-app.use('/assets/js/fancybox', express.static( __dirname + Config.FolderFancybox.js() ))		// Set 	Fancybox JS			Public Folder
-app.use('/assets/css/fancybox', express.static( __dirname + Config.FolderFancybox.css() ))	// Set 	Fancybox CSS		Public Folder
+app.use('/dist', express.static( __dirname + '/' + Config.FolderDist ))										// Set 	Generic 				Public Folder
+app.use('/assets/js/jquery', express.static( __dirname + '/' + Config.FolderJquery.js ))				// Set 	jQuery JS 			Public Folder
+app.use('/assets/js/socketIO', express.static( __dirname + '/' + Config.FolderSocketIO.js ))		// Set 	Socket IO 			Public Folder
+app.use('/assets/js/select2', express.static( __dirname + '/' + Config.FolderSelect2.js ))			// Set 	Select2 JS			Public Folder
+app.use('/assets/css/select2', express.static( __dirname + '/' + Config.FolderSelect2.css ))		// Set 	Select2 CSS			Public Folder
+app.use('/assets/js/fancybox', express.static( __dirname + '/' + Config.FolderFancybox.js ))		// Set 	Fancybox JS			Public Folder
+app.use('/assets/css/fancybox', express.static( __dirname + '/' + Config.FolderFancybox.css ))	// Set 	Fancybox CSS		Public Folder
+app.use(favicon(__dirname + '/dist/favicons/favicon.ico'))																// Set the favicon
 
 app.set('view engine', 'ejs')																										// Set Render engine
-app.set('views', __dirname + Config.FolderViews() )																					// Set View root folder
+app.set('views', __dirname + '/' + Config.FolderViews )																					// Set View root folder
 
 // create application/json parser
 let jsonParser = bodyParser.json()
@@ -53,11 +55,11 @@ io.on('connection', socket => {
 			,		FoldersToScan = {}
 
 		// If not specified to scan all folder, reduce the Folders to be scan to the newest one
-			if(data[Config.AdminForm().IngestAllLibraries]) {
-				FoldersToScan = Config.FixtureLibraryReleases()
+			if(data[Config.AdminForm.IngestAllLibraries]) {
+				FoldersToScan = Config.FixtureLibraryReleases
 			} else {
-				let maxDate = _.max(Object.keys(Config.FixtureLibraryReleases()), o => { Config.FixtureLibraryReleases()[o] })
-				FoldersToScan[maxDate] = Config.FixtureLibraryReleases()[maxDate]
+				let maxDate = _.max(Object.keys(Config.FixtureLibraryReleases, o => { Config.FixtureLibraryReleases[o] }))
+				FoldersToScan[maxDate] = Config.FixtureLibraryReleases[maxDate]
 			}
 
 		let NumberOfFolderToScan = Object.keys(FoldersToScan).length
@@ -96,7 +98,7 @@ io.on('connection', socket => {
 								Database[PathPart[2]][PathPart[3]] = {}
 							}
 							if(PathPart[4] != PathPart[3] + '.xml') {
-								Database[PathPart[2]][PathPart[3]]['xml_status'] = Config.ErrorMessage().XMLFileNotLikeFixture
+								Database[PathPart[2]][PathPart[3]]['xml_status'] = Config.ErrorMessage.XMLFileNotLikeFixture
 							}
 							if(PathPart[4].toLowerCase() != 'personalities.xml') {
 								Database[PathPart[2]][PathPart[3]]['xml'] = PathPart[4]
@@ -125,7 +127,7 @@ io.on('connection', socket => {
 app.get('/', (req, res) => {
 	// Page Settings
 		res.locals.Page = 'home'
-		res.locals.SiteName = Config.SiteName()
+		res.locals.SiteName = Config.SiteName
 		res.locals.PageTitle = 'Fixture Finder @nline'
 	// Rendering Page
 		res.render('index', (err, html) => {
@@ -140,9 +142,9 @@ app.get('/', (req, res) => {
 app.get('/admin', (req, res) => {
 	// Page Settings
 		res.locals.Page = 'admin'
-		res.locals.SiteName = Config.SiteName()
+		res.locals.SiteName = Config.SiteName
 		res.locals.PageTitle = 'Administration - Fixture Finder @nline'
-		res.locals.FormID = Config.AdminForm()
+		res.locals.FormID = Config.AdminForm
 	// Rendering Page
 		res.render('index', (err, html) => {
 			if(err) {
@@ -157,7 +159,7 @@ app.get('/admin', (req, res) => {
 app.get('*', (req, res) => {
 	// Page Settings
 		res.locals.Page = '404'
-		res.locals.SiteName = Config.SiteName()
+		res.locals.SiteName = Config.SiteName
 		res.locals.PageTitle = 'Error 404 - Fixture Finder @nline'
 	// Rendering Page
 		res.render('index', (err, html) => {
