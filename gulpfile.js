@@ -5,6 +5,7 @@ let gulp = require('gulp')
 ,		FolderCSS = 'dist/css/*.css'
 ,		SourceCSS = 'private/scss/*.scss'
 ,		SourceJS = 'private/js/*.js'
+,		SourceIMG = 'private/img/*'
 
 gulp.task('sass', () => {
 	return gulp.src(SourceCSS)
@@ -26,6 +27,11 @@ gulp.task('js', () => {
     }))
 		.pipe(gulp.dest('dist/js'))
 })
+gulp.task('image', () => {
+  gulp.src(SourceIMG)
+    .pipe($.image())
+    .pipe(gulp.dest('dist/img'))
+})
 
 gulp.task('watch', () => {
 	let server = $.livereload()
@@ -40,5 +46,5 @@ gulp.task('clean', () => {
 	del('dist')
 })
 
-gulp.task('default', ['sass', 'js', 'clean'], () => {
+gulp.task('default', ['sass', 'js', 'image', 'clean'], () => {
 })

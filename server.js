@@ -23,7 +23,6 @@ app.use(session({																																// Set session
 app.use(require( Config.FolderMiddlewares() + '/flash.js'))											// Set Flash MiddleWares
 */
 app.use('/dist', express.static( __dirname + Config.FolderDist() ))										// Set 	Generic 				Public Folder
-app.use('/assets', express.static( __dirname + Config.FolderPublic() ))											// Set 	Generic 				Public Folder
 app.use('/assets/js/jquery', express.static( __dirname + Config.FolderJquery.js() ))				// Set 	jQuery JS 			Public Folder
 app.use('/assets/js/socketIO', express.static( __dirname + Config.FolderSocketIO.js() ))		// Set 	Socket IO 			Public Folder
 app.use('/assets/js/select2', express.static( __dirname + Config.FolderSelect2.js() ))			// Set 	Select2 JS			Public Folder

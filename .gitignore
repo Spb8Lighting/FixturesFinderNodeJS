@@ -1,4 +1,5 @@
 .tern-project
 node_modules
 m-pc
-public/bower_components
+bower_components
+dist
