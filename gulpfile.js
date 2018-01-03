@@ -25,8 +25,8 @@ gulp.task('sass', () => {
 gulp.task('js', () => {
 	return gulp.src(SourceJS)
 		.pipe($.uglifyes({
-       mangle: false,
-       ecma: 6
+			mangle: false,
+			ecma: 6
     }))
 		.pipe(gulp.dest('dist/js'))
 })
