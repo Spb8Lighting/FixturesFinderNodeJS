@@ -47,6 +47,7 @@ module.exports = {
 		FolderRouters : 			() => { return '/site_routers' },
 		FolderViews : 				() => { return '/views' },
 		FolderPublic : 				() => { return '/public' },
+		FolderDist : 					() => { return '/dist' },
 	//JS Scripts folder alias routing
 		FolderJquery : {
 			js : 								() => { return '/public/bower_components/jquery/dist' }
