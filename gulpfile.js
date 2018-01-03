@@ -1,12 +1,12 @@
 let gulp = require('gulp')
-,		$ = require('gulp-load-plugins')()
-,		del = require('del')
-,		FolderJS = 	'dist/js/*.js'
-,		FolderCSS = 'dist/css/*.css'
-,		FolderIMG = 'dist/img/*'
-,		SourceCSS = 'private/scss/*.scss'
-,		SourceJS = 'private/js/*.js'
-,		SourceIMG = 'private/img/*'
+,	$ = require('gulp-load-plugins')()
+,	del = require('del')
+,	FolderJS = 	'dist/js/*.js'
+,	FolderCSS = 'dist/css/*.css'
+,	FolderIMG = 'dist/img/*'
+,	SourceCSS = 'private/scss/*.scss'
+,	SourceJS = 'private/js/*.js'
+,	SourceIMG = 'private/img/*'
 
 // Process SCSS files to generate distribuable files
 gulp.task('sass', () => {
