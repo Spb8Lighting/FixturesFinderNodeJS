@@ -1,8 +1,6 @@
 let gulp = require('gulp')
 ,		$ = require('gulp-load-plugins')()
 ,		del = require('del')
-,		pump = require('pump')
-,		EJSViews = ['views/*.ejs', 'views/pages/*.ejs', 'views/partials/*.ejs', 'views/pages/subpages/*.ejs']
 ,		FolderJS = 	'dist/js/*.js'
 ,		FolderCSS = 'dist/css/*.css'
 ,		SourceCSS = 'private/scss/*.scss'
@@ -20,7 +18,7 @@ gulp.task('sass', () => {
 		.pipe($.rename('min.css'))
 		.pipe(gulp.dest('dist/css'))
 })
-gulp.task('js', (cb) => {
+gulp.task('js', () => {
 	return gulp.src(SourceJS)
 		.pipe($.uglifyes({
        mangle: false,
