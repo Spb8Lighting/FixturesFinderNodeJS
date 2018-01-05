@@ -89,7 +89,7 @@ io.on('connection', socket => {
 							}
 							if(PathPart[3].toLowerCase() == 'accessoriesindex.xml') {
 								Database[PathPart[2]]['HasAccessories'] = PathPart[3]
-							} else {
+							} else if(key == MostRecentFolder) {
 								Database[PathPart[2]]['xml_error_unwanted_file'] = Config.ErrorMessage.UnwantedXMLFileThere + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + PathPart[3]
 							}
 						} else if (NbOfLvl == 5) {	// Only Fixture XML file & Xslt
@@ -101,19 +101,21 @@ io.on('connection', socket => {
 							}
 							let FileDetail = PathPart[4].split('.', 2)
 							if(FileDetail[1].toLowerCase() == 'xml') {
-								// If the file is not personnalities.xml and then the fixture name is different than the fixture name in the xml filename
-								if(PathPart[4].toLowerCase() != 'personalities.xml' && PathPart[4].toLowerCase() != 'accessoriesindex.xml' && PathPart[4] != (PathPart[3] + '.xml')) {
-									// Filename different
-									if(FileDetail[0] != PathPart[3]) {
-										Database[PathPart[2]][PathPart[3]]['xml_error_filename_different'] = Config.ErrorMessage.XMLFilenameNotSameCase + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + FileDetail[0] + ' (found) <> ' + PathPart[3] + ' (expected)'
+								if(key == MostRecentFolder) {
+									// If the file is not personnalities.xml and then the fixture name is different than the fixture name in the xml filename
+									if(PathPart[4].toLowerCase() != 'personalities.xml' && PathPart[4].toLowerCase() != 'accessoriesindex.xml' && PathPart[4] != (PathPart[3] + '.xml')) {
+										// Filename different
+										if(FileDetail[0] != PathPart[3]) {
+											Database[PathPart[2]][PathPart[3]]['xml_error_filename_different'] = Config.ErrorMessage.XMLFilenameNotSameCase + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + FileDetail[0] + ' (found) <> ' + PathPart[3] + ' (expected)'
+										}
+										// XML Extension in uppercase
+										if(FileDetail[1] != 'xml') {
+											Database[PathPart[2]][PathPart[3]]['xml_error_extension_uppercase'] = Config.ErrorMessage.XMLExtensionInUpperCase + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + PathPart[4]
+										}
+									} else if(PathPart[4].toLowerCase() == 'accessoriesindex.xml') {
+										Database[PathPart[2]][PathPart[3]]['xml_error_unwanted_file'] = Config.ErrorMessage.UnwantedXMLFileThere + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + PathPart[4]
 									}
-									// XML Extension in uppercase
-									if(FileDetail[1] != 'xml') {
-										Database[PathPart[2]][PathPart[3]]['xml_error_extension_uppercase'] = Config.ErrorMessage.XMLExtensionInUpperCase + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + PathPart[4]
-									}
-								} else if(PathPart[4].toLowerCase() == 'accessoriesindex.xml') {
-									Database[PathPart[2]][PathPart[3]]['xml_error_unwanted_file'] = Config.ErrorMessage.UnwantedXMLFileThere + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + PathPart[4]
-								}
+							}
 								if(PathPart[4].toLowerCase() != 'personalities.xml' && PathPart[4].toLowerCase() != 'accessoriesindex.xml') {
 									Database[PathPart[2]][PathPart[3]]['xml'] = PathPart[4]
 									XMLFixtures.push(files[i])
@@ -140,7 +142,7 @@ io.on('connection', socket => {
 					StatsFixtures['NbDMXCharts'] = 0
 					for(let Manuf in Database) {
 						StatsFixtures['NbManufs']++
-						if(Database[Manuf]['xml_error_unwanted_file']) {
+						if(key == MostRecentFolder && Database[Manuf]['xml_error_unwanted_file']) {
 							StatsFixtures['Remark']+= Manuf + ': ' + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Database[Manuf]['xml_error_unwanted_file'] + "\n"
 						}
 						for(let Fixture in Database[Manuf]) {
@@ -165,13 +167,13 @@ io.on('connection', socket => {
 									StatsFixtures[Manuf]['NbDMXCharts']++
 									StatsFixtures['NbDMXCharts']++
 								}
-								if(Database[Manuf][Fixture]['xml_error_filename_different']) {
+								if(key == MostRecentFolder && Database[Manuf][Fixture]['xml_error_filename_different']) {
 									StatsFixtures['Remark']+= Manuf + ' > ' + Fixture + ' : ' + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Database[Manuf][Fixture]['xml_error_filename_different'] + "\n"
 								}
-								if(Database[Manuf][Fixture]['xml_error_extension_uppercase']) {
+								if(key == MostRecentFolder && Database[Manuf][Fixture]['xml_error_extension_uppercase']) {
 									StatsFixtures['Remark']+= Manuf + ' > ' + Fixture + ' : ' + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Database[Manuf][Fixture]['xml_error_extension_uppercase'] + "\n"
 								}
-								if(Database[Manuf][Fixture]['xml_error_unwanted_file']) {
+								if(key == MostRecentFolder && Database[Manuf][Fixture]['xml_error_unwanted_file']) {
 									StatsFixtures['Remark']+= Manuf + ' > ' + Fixture + ' : ' + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Database[Manuf][Fixture]['xml_error_unwanted_file'] + "\n"
 								}
 							} else {
@@ -185,7 +187,6 @@ io.on('connection', socket => {
 					io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Charts', percentage : 0, description : '~' + StatsFixtures['NbDMXCharts'] + ' Charts' } )
 					if(key == MostRecentFolder) {
 						io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Remark', Remark: StatsFixtures['Remark'].replace(/(\r\n|\n\r|\r|\n)/g, '<br />') })
-						console.log(StatsFixtures['Remark'])
 					}
 				})
 				.catch(error => console.error('Something went wrong', error))
