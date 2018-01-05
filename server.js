@@ -9,6 +9,7 @@ const		Config = 		require('./config.js') 																// Config File
 , sleep = 				require('system-sleep')																		// Sleep function
 , recursive = 		require('recursive-readdir')															// Recursive File listing
 , _ =							require('lodash')																					// Lodash
+,	sortObj = 			require('sort-object')																		// Sort Object Function
 , app = 					express()																									// Define HTTP Server
 , server = 				app.listen( Config.HttpPort )														// Define HTTP Port server
 , io = 						require('socket.io').listen(server)												// Socket IO server
@@ -51,15 +52,14 @@ io.on('connection', socket => {
 			data = JSON.parse(data)
 
 		// Set the severals variables used later
-		let		Database = {}
-			,		FoldersToScan = {}
+		let	FoldersToScan = {}
+		, MostRecentFolder = _.max(Object.keys(Config.FixtureLibraryReleases, o => { Config.FixtureLibraryReleases[o] }))
 
 		// If not specified to scan all folder, reduce the Folders to be scan to the newest one
 			if(data[Config.AdminForm.IngestAllLibraries]) {
 				FoldersToScan = Config.FixtureLibraryReleases
 			} else {
-				let maxDate = _.max(Object.keys(Config.FixtureLibraryReleases, o => { Config.FixtureLibraryReleases[o] }))
-				FoldersToScan[maxDate] = Config.FixtureLibraryReleases[maxDate]
+				FoldersToScan[MostRecentFolder] = Config.FixtureLibraryReleases[MostRecentFolder]
 			}
 
 		let NumberOfFolderToScan = Object.keys(FoldersToScan).length
@@ -68,14 +68,16 @@ io.on('connection', socket => {
 		for(let key in FoldersToScan) {
 			NumberOfFolderScanned++
 			io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Init', percentage : 0, description : key })
-			recursive(FoldersToScan[key], ['*.+(png|PNG|bmp|BMP|jpeg|JPEG|jpg|JPG|gif|GIF|xslt|XSLT)'])
+			recursive(FoldersToScan[key], ['*.+(png|PNG|bmp|BMP|jpeg|jpg|gif)'])
 				.then(files => {
 
-					let XMLWheels = []
+					let Database = {}
+					,		XMLWheels = []
 					,		XMLFixtures = []
 					,		len = files.length
 
 					for (let i = 0; i < len; i++) {
+						// Sent socket each %10 to avoid too much communication
 						if(i%10 == 0) {
 							io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'FileSystem', percentage : Percentage((i + 1), len), description : (i + 1) + '/' + len + ' files ingested...' } )
 						}
@@ -85,10 +87,10 @@ io.on('connection', socket => {
 							if(typeof Database[PathPart[2]] !== 'object') {
 								Database[PathPart[2]] = {}
 							}
-							Database[PathPart[2]]['HasAccessories'] = true
-							XMLWheels.push(files[i])
-							if(i%10 == 0) {
-								io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Accessories', percentage : 0, description : XMLWheels.length + ' accessories' } )
+							if(PathPart[3].toLowerCase() == 'accessoriesindex.xml') {
+								Database[PathPart[2]]['HasAccessories'] = PathPart[3]
+							} else {
+								Database[PathPart[2]]['xml_error_unwanted_file'] = Config.ErrorMessage.UnwantedXMLFileThere + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + PathPart[3]
 							}
 						} else if (NbOfLvl == 5) {	// Only Fixture XML file & Xslt
 							if(typeof Database[PathPart[2]] !== 'object') {
@@ -97,23 +99,94 @@ io.on('connection', socket => {
 							if(typeof Database[PathPart[2]][PathPart[3]] !== 'object') {
 								Database[PathPart[2]][PathPart[3]] = {}
 							}
-							if(PathPart[4] != PathPart[3] + '.xml') {
-								Database[PathPart[2]][PathPart[3]]['xml_status'] = Config.ErrorMessage.XMLFileNotLikeFixture
-							}
-							if(PathPart[4].toLowerCase() != 'personalities.xml') {
-								Database[PathPart[2]][PathPart[3]]['xml'] = PathPart[4]
-								XMLFixtures.push(files[i])
-								if(i%10 == 0) {
-									io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Charts', percentage : 0, description : XMLFixtures.length + ' Charts' } )
+							let FileDetail = PathPart[4].split('.', 2)
+							if(FileDetail[1].toLowerCase() == 'xml') {
+								// If the file is not personnalities.xml and then the fixture name is different than the fixture name in the xml filename
+								if(PathPart[4].toLowerCase() != 'personalities.xml' && PathPart[4].toLowerCase() != 'accessoriesindex.xml' && PathPart[4] != (PathPart[3] + '.xml')) {
+									// Filename different
+									if(FileDetail[0] != PathPart[3]) {
+										Database[PathPart[2]][PathPart[3]]['xml_error_filename_different'] = Config.ErrorMessage.XMLFilenameNotSameCase + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + FileDetail[0] + ' (found) <> ' + PathPart[3] + ' (expected)'
+									}
+									// XML Extension in uppercase
+									if(FileDetail[1] != 'xml') {
+										Database[PathPart[2]][PathPart[3]]['xml_error_extension_uppercase'] = Config.ErrorMessage.XMLExtensionInUpperCase + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + PathPart[4]
+									}
+								} else if(PathPart[4].toLowerCase() == 'accessoriesindex.xml') {
+									Database[PathPart[2]][PathPart[3]]['xml_error_unwanted_file'] = Config.ErrorMessage.UnwantedXMLFileThere + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + PathPart[4]
 								}
-							} else if (PathPart[4] == 'personalities.xml') {
-								Database[PathPart[2]][PathPart[3]]['HasPersonalities'] = true
+								if(PathPart[4].toLowerCase() != 'personalities.xml' && PathPart[4].toLowerCase() != 'accessoriesindex.xml') {
+									Database[PathPart[2]][PathPart[3]]['xml'] = PathPart[4]
+									XMLFixtures.push(files[i])
+								} else if (PathPart[4].toLowerCase() == 'personalities.xml') {
+									Database[PathPart[2]][PathPart[3]]['HasPersonalities'] = PathPart[4]
+								}
+							} else if(FileDetail[1].toLowerCase() == 'xslt') {
+								if(typeof Database[PathPart[2]][PathPart[3]]['xslt'] !== 'object') {
+									Database[PathPart[2]][PathPart[3]]['xslt'] = {}
+								}
+								Database[PathPart[2]][PathPart[3]]['xslt'][FileDetail[0]] = PathPart[4]
 							}
 						}
 					}
-					let feedback = XMLWheels.length + ' wheels detected | ' + XMLFixtures.length + ' Fixtures detected'
 					io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'FileSystem', percentage : 100, description : len + ' files' } )
-					//console.log(Database)
+
+					// Let's perform some stats analysis from the result
+					sortObj(Database)
+					let StatsFixtures = {}
+					StatsFixtures['Remark'] = ''
+					StatsFixtures['NbManufs'] = 0
+					StatsFixtures['NbAccessories'] = 0
+					StatsFixtures['NbFixtures'] = 0
+					StatsFixtures['NbDMXCharts'] = 0
+					for(let Manuf in Database) {
+						StatsFixtures['NbManufs']++
+						if(Database[Manuf]['xml_error_unwanted_file']) {
+							StatsFixtures['Remark']+= Manuf + ': ' + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Database[Manuf]['xml_error_unwanted_file'] + "\n"
+						}
+						for(let Fixture in Database[Manuf]) {
+							// Remove Fixtures "HasAccessories" which are not fixtures
+							if(Fixture != 'HasAccessories') {
+								StatsFixtures['NbFixtures']++
+								if(typeof StatsFixtures[Manuf] !== 'object') {
+									StatsFixtures[Manuf] = {}
+								}
+								if(StatsFixtures[Manuf]['NbFixtures']) {
+									StatsFixtures[Manuf]['NbFixtures']++
+								} else {
+									StatsFixtures[Manuf]['NbFixtures'] = 1
+									StatsFixtures[Manuf]['NbDMXCharts'] = 0
+								}
+								if(Database[Manuf][Fixture]['xslt']) {
+									StatsFixtures[Manuf][Fixture] = Object.keys(Database[Manuf][Fixture]['xslt']).length + 1
+									StatsFixtures[Manuf]['NbDMXCharts'] += StatsFixtures[Manuf][Fixture]
+									StatsFixtures['NbDMXCharts'] += StatsFixtures[Manuf][Fixture]
+								} else {
+									StatsFixtures[Manuf][Fixture] = 1
+									StatsFixtures[Manuf]['NbDMXCharts']++
+									StatsFixtures['NbDMXCharts']++
+								}
+								if(Database[Manuf][Fixture]['xml_error_filename_different']) {
+									StatsFixtures['Remark']+= Manuf + ' > ' + Fixture + ' : ' + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Database[Manuf][Fixture]['xml_error_filename_different'] + "\n"
+								}
+								if(Database[Manuf][Fixture]['xml_error_extension_uppercase']) {
+									StatsFixtures['Remark']+= Manuf + ' > ' + Fixture + ' : ' + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Database[Manuf][Fixture]['xml_error_extension_uppercase'] + "\n"
+								}
+								if(Database[Manuf][Fixture]['xml_error_unwanted_file']) {
+									StatsFixtures['Remark']+= Manuf + ' > ' + Fixture + ' : ' + "\n" + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Database[Manuf][Fixture]['xml_error_unwanted_file'] + "\n"
+								}
+							} else {
+								StatsFixtures['NbAccessories']++
+							}
+						}
+					}
+					io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Manufacturers', percentage : 0, description : StatsFixtures['NbManufs'] + ' Manufacturers' } )
+					io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Accessories', percentage : 0, description : StatsFixtures['NbAccessories'] + ' Accessories' } )
+					io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Fixtures', percentage : 0, description : StatsFixtures['NbFixtures'] + ' Fixtures' } )
+					io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Charts', percentage : 0, description : '~' + StatsFixtures['NbDMXCharts'] + ' Charts' } )
+					if(key == MostRecentFolder) {
+						io.sockets.emit('TaskProgress', { folder: 'Library-' + key, Type : 'Remark', Remark: StatsFixtures['Remark'].replace(/(\r\n|\n\r|\r|\n)/g, '<br />') })
+						console.log(StatsFixtures['Remark'])
+					}
 				})
 				.catch(error => console.error('Something went wrong', error))
 		}

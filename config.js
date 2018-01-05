@@ -32,7 +32,9 @@ module.exports = {
 			},
 		//Error Message
 			ErrorMessage :						{
-					XMLFileNotLikeFixture :				'XML File is not matching exactly the Fixture name'
+					XMLExtensionInUpperCase :			'XML Extension file is in UPPERCASE: ',
+					XMLFilenameNotSameCase :			'XML Filename has not the same Fixture folder name (case included): ',
+					UnwantedXMLFileThere :				'This XML File is not expected to exists here: '
 			},
 	//Server Parameter
 		SiteName : 						'Fixture Finder @nline',
