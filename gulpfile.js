@@ -49,13 +49,14 @@ gulp.task('clean', () => {
 })
 // On any modification of dist file, sent to update on browser
 gulp.task('watch', () => {
-	let server = $.livereload()
 	gulp.watch(SourceCSS, ['sass'])
 	gulp.watch(SourceJS, ['js'])
 	gulp.watch(SourceIMG, ['img'])
+	/*
+	let server = $.livereload()
 	gulp.watch([FolderIMG, FolderJS, FolderCSS]).on('change', event => {
 		server.changed(event.path)
-	})
+	})*/
 })
 // Default task when gulp command launched
 gulp.task('default', ['font', 'sass', 'js', 'img'], () => {

@@ -1,204 +1,89 @@
-<form id="adminform" method="post" action="/admin">
-	<div>
+<div class="flex-container" id="content">
+	<form id="adminform" method="post" action="/admin">
 		<fieldset>
-			<h2>Ingestions</h2>
-			<div>
-				<div>
-					<label for="<%= locals.FormID.IngestAllLibraries %>">
-						🗃 Global Ingestion (on = All Releases)
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="<%= locals.FormID.IngestAllLibraries %>" name="<%= locals.FormID.IngestAllLibraries %>" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="<%= locals.FormID.IngestAccessories %>">
-						🗃 1. Ingest Manufacturers Wheels
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="<%= locals.FormID.IngestAccessories %>" name="<%= locals.FormID.IngestAccessories %>" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="<%= locals.FormID.IngestFixture %>">
-						🗃 2. Ingest Fixtures
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="<%= locals.FormID.IngestFixture %>" name="<%= locals.FormID.IngestFixture %>" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="<%= locals.FormID.UpdateFixtureAccessories %>">
-						🗃 3. Update Fixtures Profile with Pictures
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="<%= locals.FormID.UpdateFixtureAccessories %>" name="<%= locals.FormID.UpdateFixtureAccessories %>" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="<%= locals.FormID.ComputeFixtureChangelog %>">
-						🗃 4. Compute Fixtures Changelog
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="<%= locals.FormID.ComputeFixtureChangelog %>" name="<%= locals.FormID.ComputeFixtureChangelog %>" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="reparameters">
-						📒 5. Ingest DMX Attributs
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="reparameters" name="reparameters" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="restats">
-						📈 6. Compute FF@ Statistics
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="restats" name="restats" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="scanpreset">
-						🗃 Scan Only Fixtures Presets
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="scanpreset" name="scanpreset" />
-				</div>
-			</div>
+			<legend>Ingestions</legend>
+			<ul class="is-unstyled">
+    		<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.IngestAllLibraries %>" name="<%= locals.FormID.IngestAllLibraries %>">
+					<label class="label" for="<%= locals.FormID.IngestAllLibraries %>">Global Ingestion (on = All Releases)
+				</li>
+			</ul>
+			<ol>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.IngestAccessories %>" name="<%= locals.FormID.IngestAccessories %>">
+					<label class="label" for="<%= locals.FormID.IngestAccessories %>">Ingest Manufacturers Wheels</label>
+				</li>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.IngestFixture %>" name="<%= locals.FormID.IngestFixture %>">
+					<label class="label" for="<%= locals.FormID.IngestFixture %>">Ingest Fixtures</label>
+				</li>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.UpdateFixtureAccessories %>" name="<%= locals.FormID.UpdateFixtureAccessories %>">
+					<label class="label" for="<%= locals.FormID.UpdateFixtureAccessories %>">Update Fixtures Profile with Pictures</label>
+				</li>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.ComputeFixtureChangelog %>" name="<%= locals.FormID.ComputeFixtureChangelog %>">
+					<label class="label" for="<%= locals.FormID.ComputeFixtureChangelog %>">Compute Fixtures Changelog</label>
+				</li>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.ExtractFixtureParameters %>" name="<%= locals.FormID.ExtractFixtureParameters %>">
+					<label class="label" for="<%= locals.FormID.ExtractFixtureParameters %>">Extract Fixture Parameters</label>
+				</li>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.ComputeFFStats %>" name="<%= locals.FormID.ComputeFFStats %>">
+					<label class="label" for="<%= locals.FormID.ComputeFFStats %>">Compute FF@ Statistics</label>
+				</li>
+			</ol>
+			<ul class="is-unstyled">
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.IngestFixturePresets %>" name="<%= locals.FormID.IngestFixturePresets %>">
+					<label class="label" for="<%= locals.FormID.IngestFixturePresets %>">Ingest Fixture Preset only</label>
+				</li>
+			</ul>
 		</fieldset>
 		<fieldset>
-			<h2>Quality</h2>
-			<div>
-				<div>
-					<label>
-						Reports
-					</label>
-				</div>
-				<div>
-					<a href="./qualityscan">Global file report</a> <a href="./quality">Fixture Quality report</a>
-				</div>
-			</div>
+			<legend>Referencing</legend>
+			<ul class="is-unstyled">
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.RenewSitemap %>" name="<%= locals.FormID.RenewSitemap %>">
+					<label class="label" for="<%= locals.FormID.RenewSitemap %>">Renew the Sitemap</label>
+				</li>
+			</ul>
 		</fieldset>
 		<fieldset>
-			<h2>Referencing</h2>
-			<div>
-				<div>
-					<label for="resitemap">
-						🖧 Renew Sitemap
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="resitemap" name="resitemap" />
-				</div>
-			</div>
+			<legend>Cache Management</legend>
+			<ul class="is-unstyled">
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.CacheCleanAll %>" name="<%= locals.FormID.CacheCleanAll %>">
+					<label class="label" for="<%= locals.FormID.CacheCleanAll %>">Clean all caches</label>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.CacheFFChangelog %>" name="<%= locals.FormID.CacheFFChangelog %>">
+					<label class="label" for="<%= locals.FormID.CacheFFChangelog %>">Clean FF@ Changelog</label>
+				</li>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.CacheLibraryChangelog %>" name="<%= locals.FormID.CacheLibraryChangelog %>">
+					<label class="label" for="<%= locals.FormID.CacheLibraryChangelog %>">Clean Library  Changelog</label>
+				</li>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.CacheFixtureList %>" name="<%= locals.FormID.CacheFixtureList %>">
+					<label class="label" for="<%= locals.FormID.CacheFixtureList %>">Clean Fixture List</label>
+				</li>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.CacheFixture %>" name="<%= locals.FormID.CacheFixture %>">
+					<label class="label" for="<%= locals.FormID.CacheFixture %>">Clean Fixtures</label>
+				</li>
+				<li>
+					<input type="checkbox" class="switch" id="<%= locals.FormID.CacheSearch %>" name="<%= locals.FormID.CacheSearch %>">
+					<label class="label" for="<%= locals.FormID.CacheSearch %>">Clean Fixtures</label>
+				</li>
+			</ul>
 		</fieldset>
-		<fieldset>
-			<h2>Cache Management</h2>
-			<div>
-				<div>
-					<label for="cleancache">
-						📁 Clean all caches
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="cleancache" name="cleancache" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="cleancacheChangelog">
-						🗍 Clean Changelog cache
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="cleancacheChangelog" name="cleancacheChangelog" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="cleancacheFixtureChangelog">
-						🗍 Clean Fixture Changelog cache
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="cleancacheFixtureChangelog" name="cleancacheFixtureChangelog" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="cleancacheFixtureList">
-						🗍 Clean Fixture list cache
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="cleancacheFixtureList" name="cleancacheFixtureList" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="cleancacheFixtureDetail">
-						🗍 Clean Fixture detail cache
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="cleancacheFixtureDetail" name="cleancacheFixtureDetail" />
-				</div>
-			</div>
-			<div>
-				<div>
-					<label for="cleancacheSearch">
-						🗍 Clean Search Cache
-					</label>
-				</div>
-				<div>
-					<input type="checkbox" id="cleancacheSearch" name="cleancacheSearch" />
-				</div>
-			</div>
-			</fieldset>
-			<fieldset>
-				<h2>Security</h2>
-				<div>
-					<div>
-						<label for="parse">
-							🔒 Password
-						</label>
-					</div>
-					<div>
-						<input type="password" name="parse" id="parse"/>
-					</div>
-				</div>
-
-				<div>
-					<div>
-						<label for="submit">
-							Ready?
-						</label>
-					</div>
-					<div>
-						<input name="submit" id="submit" type="submit" value="Have some fun ..." />
-					</div>
-				</div>
-			</fieldset>
+			<p>🔒 <input type="password" name="parse" id="parse" value="password">
+			<button class="btn--warning" name="submit" id="submit" type="submit">Proceed</button></p>
+	</form>
+	<div class="grid-2" id="Results">
 	</div>
-		<div>
-			<fieldset id="Results">
-			</fieldset>
-		</div>
-</form>
+</div>

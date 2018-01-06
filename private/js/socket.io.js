@@ -33,55 +33,45 @@ socket.on('TaskProgress', data => {
 				Container.setAttribute('id', data.folder)
 				Container.setAttribute('class', 'ingestion')
 				Container.innerHTML = `<h2></h2>
-				<p></p>
-				<h3>File System</h3>
 				<div class="FileSystem">
+				<h3>File System</h3>
 					<p>...</p>
-					<p>
-						<progress value="0" max="100"></progress>
-						<span></span>
-					</p>
+					<progress value="0" max="100"></progress>
+					<span></span>
 				</div>
-				<h3>Manufacturers</h3>
 				<div class="Manufacturers">
+					<h3>Manufacturers</h3>
 					<p>...</p>
-					<p>
-						<progress value="0" max="100"></progress>
-						<span></span>
-					</p>
+					<progress value="0" max="100"></progress>
+					<span></span>
 				</div>
-				<h3>Accessories</h3>
 				<div class="Accessories">
+					<h3>Accessories</h3>
 					<p>...</p>
-					<p>
-						<progress value="0" max="100"></progress>
-						<span></span>
-					</p>
+					<progress value="0" max="100"></progress>
+					<span></span>
 				</div>
-				<h3>Fixtures</h3>
 				<div class="Fixtures">
+					<h3>Fixtures</h3>
 					<p>...</p>
-					<p>
-						<progress value="0" max="100"></progress>
-						<span></span>
-					</p>
+					<progress value="0" max="100"></progress>
+					<span></span>
 				</div>
-				<h3>Charts</h3>
 				<div class="Charts">
+					<h3>Charts</h3>
 					<p>...</p>
-					<p>
-						<progress value="0" max="100"></progress>
-						<span></span>
-					</p>
-				</div>`
+					<progress value="0" max="100"></progress>
+					<span></span>
+				</div>
+				<p class="alert--warning remark"></p>`
 				Results.appendChild(Container)
 				FolderProgress = document.getElementById(data.folder)
 			}
 		// Then do the stuff
 		if(data.Type != 'Init' && data.Type != 'Remark') {
-			let Advancement = FolderProgress.querySelector('.' + data.Type + ' progress')
-			,		Percentage = FolderProgress.querySelector('.' + data.Type + ' span')
-			,		Title = FolderProgress.querySelector('.' + data.Type + ' p:first-child')
+			let Advancement = FolderProgress.querySelector('.' + data.Type + '>progress')
+			,		Percentage = FolderProgress.querySelector('.' + data.Type + '>span')
+			,		Title = FolderProgress.querySelector('.' + data.Type + '>p')
 			Advancement.setAttribute('value', data.percentage)
 			Percentage.innerHTML = data.percentage + '%'
 			Title.innerHTML = data.description
@@ -89,7 +79,8 @@ socket.on('TaskProgress', data => {
 			FolderProgress.querySelector('h2').innerHTML = data.description
 		} else {
 			if(data.Remark) {
-				FolderProgress.querySelector('p:first-child').innerHTML = data.Remark
+				let RemarkSelector = FolderProgress.querySelector('.remark')
+				RemarkSelector.innerHTML = '<h3>Warning</h3>' + data.Remark
 			}
 		}
  })

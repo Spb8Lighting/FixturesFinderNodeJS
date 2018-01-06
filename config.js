@@ -7,7 +7,16 @@ module.exports = {
 				IngestAccessories :					'IngestAccessories',
 				IngestFixture :							'IngestFixture',
 				UpdateFixtureAccessories :	'UpdateFixtureAccessories',
-				ComputeFixtureChangelog :		'ComputeFixtureChangelog'
+				ComputeFixtureChangelog :		'ComputeFixtureChangelog',
+				ExtractFixtureParameters :	'ExtractFixtureParameters',
+				ComputeFFStats :						'ComputeFFStats',
+				IngestFixturePresets :			'IngestFixturePresets',
+				RenewSitemap :							'RenewSitemap',
+				CacheCleanAll :							'CacheCleanAll',
+				CacheFFChangelog :					'CacheFFChangelog',
+				CacheLibraryChangelog :			'CacheLibraryChangelog',
+				CacheFixtureList :					'CacheFixtureList',
+				CacheFixture :							'CacheFixture'
 		},
 		//Fixture Library Releases Message
 			FixtureLibraryReleases :	{
