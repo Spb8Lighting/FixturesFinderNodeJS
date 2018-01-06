@@ -16,7 +16,8 @@ module.exports = {
 				CacheFFChangelog :					'CacheFFChangelog',
 				CacheLibraryChangelog :			'CacheLibraryChangelog',
 				CacheFixtureList :					'CacheFixtureList',
-				CacheFixture :							'CacheFixture'
+				CacheFixture :							'CacheFixture',
+				CacheSearch :								'CacheSearch'
 		},
 		//Fixture Library Releases Message
 			FixtureLibraryReleases :	{
