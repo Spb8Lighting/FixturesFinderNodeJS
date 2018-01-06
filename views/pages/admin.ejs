@@ -1,5 +1,5 @@
-<div class="flex-container" id="content">
-	<form id="adminform" method="post" action="/admin">
+<div class="flex-container" id="Content">
+	<form id="AdminForm" method="post" action="/admin">
 		<fieldset>
 			<legend>Ingestions</legend>
 			<ul class="is-unstyled">
@@ -81,7 +81,7 @@
 				</li>
 			</ul>
 		</fieldset>
-			<p>🔒 <input type="password" name="parse" id="parse" value="password">
+			<p>🔒 <input type="password" name="<%= locals.FormID.Password %>" id="<%= locals.FormID.Password %>">
 			<button class="btn--warning" name="submit" id="submit" type="submit">Proceed</button></p>
 	</form>
 	<div class="grid-2" id="Results">

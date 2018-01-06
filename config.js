@@ -17,7 +17,8 @@ module.exports = {
 				CacheLibraryChangelog :			'CacheLibraryChangelog',
 				CacheFixtureList :					'CacheFixtureList',
 				CacheFixture :							'CacheFixture',
-				CacheSearch :								'CacheSearch'
+				CacheSearch :								'CacheSearch',
+				Password :									'Password'
 		},
 		//Fixture Library Releases Message
 			FixtureLibraryReleases :	{
@@ -53,20 +54,5 @@ module.exports = {
 		FolderRouters : 			'site_routers',
 		FolderViews : 				'views',
 		FolderDist : 					'dist',
-		FolderPrivate : 			'private',
-	//JS Scripts folder alias routing
-		FolderJquery : {
-			js : 								'bower_components/jquery/dist'
-		},
-		FolderSocketIO : {
-			js : 								'bower_components/socket.io-client/dist'
-		},
-		FolderSelect2 : {
-			js :								'bower_components/select2/dist/js',
-			css :								'bower_components/select2/dist/css'
-		},
-		FolderFancybox : {
-			js :								'bower_components/fancybox/dist/',
-			css :								'bower_components/fancybox/dist/'
-		}
+		FolderPrivate : 			'private'
 }

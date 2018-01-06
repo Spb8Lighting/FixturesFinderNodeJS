@@ -9,18 +9,9 @@
 </footer><% } %>
 
 <!-- JavaScript load -->
-<!-- build:js js/min.js -->
-<script defer src="./assets/js/jquery/jquery.min.js"></script>
-<script defer src="./assets/js/select2/select2.min.js"></script>
-<script defer src="./assets/js/fancybox/jquery.fancybox.min.js"></script>
-<!-- endbuild -->
 <%_ if(locals.Page == 'home') { %>
-<!-- build:js js/home.js -->
-<script defer src="./dist/js/script.js"></script>
-<!-- endbuild -->
+<script defer src="./dist/js/app.min.es5.js"></script>
 <%_ } if(locals.Page == 'admin') { %>
-<!-- build:js js/socket.js -->
-<script defer src="./assets/js/socketIO/socket.io.js"></script>
-<script defer src="./dist/js/socket.io.js"></script>
-<!-- endbuild -->
+<script src="/socket.io/socket.io.js"></script>
+<script defer src="./dist/js/admin.min.es5.js"></script>
 <% } %>

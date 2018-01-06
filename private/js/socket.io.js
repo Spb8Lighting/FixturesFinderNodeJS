@@ -12,7 +12,7 @@ function formToJSON(form) {
 }
 let socket = io('http://localhost:8080')
 ,		Results = document.getElementById('Results')
-,		Form = document.getElementById('adminform')
+,		Form = document.getElementById('AdminForm')
 // On Form Submit send to SocketServer
 Form.addEventListener('submit', e => {
 	// Block form submit

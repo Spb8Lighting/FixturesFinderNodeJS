@@ -5,9 +5,10 @@ const Config = 		require('./config.js')
 ,	FolderJS = 		Config.FolderDist + '/js/*.js'
 ,	FolderCSS = 	Config.FolderDist + '/css/*.css'
 ,	FolderIMG = 	Config.FolderDist + '/img/**/*'
-,	SourceFont = Config.FolderPrivate + '/*.ttf'
+,	SourceFont = 	Config.FolderPrivate + '/*.ttf'
 ,	SourceCSS = 	Config.FolderPrivate + '/scss/*.scss'
-,	SourceJS = 		Config.FolderPrivate + '/js/*.js'
+,	ClientJS = 		['bower_components/jquery/dist/jquery.min.js', 'bower_components/fancybox/dist/jquery.fancybox.min.js', 'bower_components/select2/dist/js/select2.min.js', Config.FolderPrivate + '/js/script.js']
+,	AdminJS = 		[Config.FolderPrivate + '/js/socket.io.js']
 ,	SourceIMG = 	Config.FolderPrivate + '/img/**/*'
 
 // Process Other files to generate distribuable files
@@ -16,7 +17,7 @@ gulp.task('font', () => {
 		.pipe(gulp.dest( Config.FolderDist ))
 })
 // Process SCSS files to generate distribuable files
-gulp.task('sass', () => {
+gulp.task('css', () => {
 	return gulp.src(SourceCSS)
 		.pipe($.sass({
 			onError: console.error.bind(console, 'SASS Error')
@@ -24,18 +25,44 @@ gulp.task('sass', () => {
 		.pipe($.autoprefixer({
 			browsers: ['last 5 versions']
 		}))
+		.pipe(gulp.dest( Config.FolderDist + '/css'))
 		.pipe($.cleanCss())
-		.pipe($.rename('min.css'))
+		.pipe($.rename(path => {
+			path.basename += '.min'
+		}))
 		.pipe(gulp.dest( Config.FolderDist + '/css'))
 })
 // Process JS files to generate distribuable files
-gulp.task('js', () => {
-	return gulp.src(SourceJS)
+function JSMinify (Files, Name) {
+	return gulp.src(Files)
+		.pipe($.concatUtil(Name))
+		.pipe($.concatUtil(Name, {process: (src, filePath) => {
+      return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1')
+    }}))
+		.pipe($.concatUtil.header('(function(window, document, undefined) {\n\'use strict\';\n'))
+    .pipe($.concatUtil.footer('\n})(window, document);\n'))
+		.pipe($.rename(path => {
+			path.basename += '.min'
+		}))
 		.pipe($.uglifyes({
 			mangle: false,
 			ecma: 6
     }))
 		.pipe(gulp.dest( Config.FolderDist + '/js'))
+		.pipe($.babel({
+      presets: ['env']
+    }))
+		.pipe($.uglify())
+		.pipe($.rename(path => {
+			path.basename += '.es5'
+		}))
+		.pipe(gulp.dest( Config.FolderDist + '/js'))
+}
+gulp.task('js:client', () => {
+	return JSMinify(ClientJS, 'app.js')
+})
+gulp.task('js:admin', () => {
+	return JSMinify(AdminJS, 'admin.js')
 })
 // Process IMG files to generate distribuable files
 gulp.task('img', () => {
@@ -49,15 +76,11 @@ gulp.task('clean', () => {
 })
 // On any modification of dist file, sent to update on browser
 gulp.task('watch', () => {
-	gulp.watch(SourceCSS, ['sass'])
-	gulp.watch(SourceJS, ['js'])
+	gulp.watch(SourceCSS, ['css'])
+	gulp.watch(ClientJS, ['js:client'])
+	gulp.watch(AdminJS, ['js:admin'])
 	gulp.watch(SourceIMG, ['img'])
-	/*
-	let server = $.livereload()
-	gulp.watch([FolderIMG, FolderJS, FolderCSS]).on('change', event => {
-		server.changed(event.path)
-	})*/
 })
 // Default task when gulp command launched
-gulp.task('default', ['font', 'sass', 'js', 'img'], () => {
+gulp.task('default', ['watch', 'font', 'css', 'js:client', 'js:admin', 'img'], () => {
 })

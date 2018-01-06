@@ -11,7 +11,7 @@ const		Config = 		require('./config.js') 																// Config File
 , _ =							require('lodash')																					// Lodash
 ,	sortObj = 			require('sort-object')																		// Sort Object Function
 , app = 					express()																									// Define HTTP Server
-, server = 				app.listen( Config.HttpPort )														// Define HTTP Port server
+, server = 				app.listen( Config.HttpPort )															// Define HTTP Port server
 , io = 						require('socket.io').listen(server)												// Socket IO server
 
 app.use(helmet())																																// Set Helmet for HTTP protection
@@ -24,17 +24,11 @@ app.use(session({																																// Set session
 }))
 app.use(require( Config.FolderMiddlewares() + '/flash.js'))											// Set Flash MiddleWares
 */
-app.use('/dist', express.static( __dirname + '/' + Config.FolderDist ))										// Set 	Generic 				Public Folder
-app.use('/assets/js/jquery', express.static( __dirname + '/' + Config.FolderJquery.js ))				// Set 	jQuery JS 			Public Folder
-app.use('/assets/js/socketIO', express.static( __dirname + '/' + Config.FolderSocketIO.js ))		// Set 	Socket IO 			Public Folder
-app.use('/assets/js/select2', express.static( __dirname + '/' + Config.FolderSelect2.js ))			// Set 	Select2 JS			Public Folder
-app.use('/assets/css/select2', express.static( __dirname + '/' + Config.FolderSelect2.css ))		// Set 	Select2 CSS			Public Folder
-app.use('/assets/js/fancybox', express.static( __dirname + '/' + Config.FolderFancybox.js ))		// Set 	Fancybox JS			Public Folder
-app.use('/assets/css/fancybox', express.static( __dirname + '/' + Config.FolderFancybox.css ))	// Set 	Fancybox CSS		Public Folder
-app.use(favicon(__dirname + '/dist/favicons/favicon.ico'))																// Set the favicon
+app.use('/dist', express.static( __dirname + '/' + Config.FolderDist ))					// Set 	Generic Public Folder
+app.use(favicon(__dirname + '/dist/favicons/favicon.ico'))											// Set the favicon
 
 app.set('view engine', 'ejs')																										// Set Render engine
-app.set('views', __dirname + '/' + Config.FolderViews )																					// Set View root folder
+app.set('views', __dirname + '/' + Config.FolderViews )													// Set View root folder
 
 // create application/json parser
 let jsonParser = bodyParser.json()
