@@ -1,0 +1,12 @@
+{
+	"name": "FixturesFinderNodeJS",
+	"dependencies": {
+		"knacss": "latest",
+		"html5shiv": "latest",
+		"fancybox": "latest",
+		"respond": "latest",
+		"select2": "latest",
+		"socket.io-client": "latest",
+		"jquery": "latest"
+	}
+}
