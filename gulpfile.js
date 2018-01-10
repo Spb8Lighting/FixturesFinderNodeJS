@@ -6,7 +6,7 @@ const Config = 		require('./config.js')
 ,	FolderCSS = 	Config.FolderDist + '/css/*.css'
 ,	FolderIMG = 	Config.FolderDist + '/img/**/*'
 ,	SourceFont = 	Config.FolderPrivate + '/*.ttf'
-,	SourceCSS = 	Config.FolderPrivate + '/scss/*.scss'
+,	SourceCSS = 	Config.FolderPrivate + '/scss/css.scss'
 ,	ClientJS = 		['bower_components/jquery/dist/jquery.min.js', 'bower_components/fancybox/dist/jquery.fancybox.min.js', 'bower_components/select2/dist/js/select2.min.js', Config.FolderPrivate + '/js/script.js']
 ,	AdminJS = 		[Config.FolderPrivate + '/js/socket.io.js']
 ,	SourceIMG = 	Config.FolderPrivate + '/img/**/*'
@@ -76,7 +76,7 @@ gulp.task('clean', () => {
 })
 // On any modification of dist file, sent to update on browser
 gulp.task('watch', () => {
-	gulp.watch(SourceCSS, ['css'])
+	gulp.watch(Config.FolderPrivate + '/scss/*.scss', ['css'])
 	gulp.watch(ClientJS, ['js:client'])
 	gulp.watch(AdminJS, ['js:admin'])
 	gulp.watch(SourceIMG, ['img'])

@@ -1,9 +1,12 @@
-<div class="flex-container" id="Content">
 	<form id="AdminForm" method="post" action="/admin">
+	<div class="btn-bar-action">
+		<button class="btn" name="submit" id="submit" type="submit">Proceed</button>
+	</div>
+	<div class="bordered">
 		<fieldset>
 			<legend>Ingestions</legend>
 			<ul class="is-unstyled">
-    		<li>
+	  		<li>
 					<input type="checkbox" class="switch" id="<%= locals.FormID.IngestAllLibraries %>" name="<%= locals.FormID.IngestAllLibraries %>">
 					<label class="label" for="<%= locals.FormID.IngestAllLibraries %>">Global Ingestion (on = All Releases)
 				</li>
@@ -81,9 +84,7 @@
 				</li>
 			</ul>
 		</fieldset>
-			<p>🔒 <input type="password" name="<%= locals.FormID.Password %>" id="<%= locals.FormID.Password %>">
-			<button class="btn--warning" name="submit" id="submit" type="submit">Proceed</button></p>
-	</form>
-	<div class="grid-2" id="Results">
 	</div>
+</form>
+<div class="grid-2 bordered" id="Results">
 </div>

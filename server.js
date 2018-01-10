@@ -221,7 +221,7 @@ app.get('/', (req, res) => {
 	// Page Settings
 		res.locals.Page = 'home'
 		res.locals.SiteName = Config.SiteName
-		res.locals.PageTitle = 'Fixture Finder/Admin - v0.0.1'
+		res.locals.PageTitle = 'Fixture Finder - v0.0.1'
 		res.locals.FormID = Config.AdminForm
 	// Rendering Page
 		res.render('index', (err, html) => {
