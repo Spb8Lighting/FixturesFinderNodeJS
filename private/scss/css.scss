@@ -2,9 +2,9 @@
 @import '../../bower_components/fancybox/dist/jquery.fancybox';
 @import '../../bower_components/select2/dist/css/select2';
 /* Body */
-	$Body_fontfamily: 'Verdana';
-	$Body_backgroundcolor: #141414;
+	$Body_backgroundcolor: #111;
 	$Body_color: #E6E6E6;
+	$Body_topcolor: #F37735;
 
 /* Links */
 	$A_color_hover : #FFA500;
@@ -24,16 +24,23 @@ $border_color: $black;
 
 /* Body */
 	body {
-		font-family: $Body_fontfamily;
 		background-color: $Body_backgroundcolor;
 		color: $Body_color;
+		border-top: 5px solid $Body_topcolor;
+		min-width: 1280px;
+		min-height: 768px;
 	}
 
 /* Header */
 	body>h1 {
-		background-color: $Header_backgroundcolor;
-		border-bottom: $Header_BorderHeight $Header_BorderStyle $Header_BorderColor;
-		font-size: 100%;
+		font-size: 150%;
+		font-weight: lighter;
+		font-family: inherit;
+		margin: 1rem;
+	}
+	body>h1>img {
+		height: 32px;
+		width: 32px;
 	}
 
 /* Content */

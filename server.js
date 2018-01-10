@@ -221,22 +221,7 @@ app.get('/', (req, res) => {
 	// Page Settings
 		res.locals.Page = 'home'
 		res.locals.SiteName = Config.SiteName
-		res.locals.PageTitle = 'Fixture Finder @nline'
-	// Rendering Page
-		res.render('index', (err, html) => {
-			if(err) {
-		  	res.status(500).send(err).end()
-			} else {
-				res.status(200).send(html).end()
-			}
-		})
-})
-// Route Admin
-app.get('/admin', (req, res) => {
-	// Page Settings
-		res.locals.Page = 'admin'
-		res.locals.SiteName = Config.SiteName
-		res.locals.PageTitle = 'Administration - Fixture Finder @nline'
+		res.locals.PageTitle = 'Fixture Finder/Admin - v0.0.1'
 		res.locals.FormID = Config.AdminForm
 	// Rendering Page
 		res.render('index', (err, html) => {
