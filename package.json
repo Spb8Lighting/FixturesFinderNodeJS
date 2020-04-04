@@ -17,7 +17,7 @@
     "express-session": "^1.15.6",
     "gulp-compass": "^2.1.0",
     "helmet": "^3.9.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.13",
     "nodemon": "^1.14.10",
     "progress-promise": "0.0.6",
     "recursive-readdir": "^2.2.1",
